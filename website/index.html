@@ -14,16 +14,16 @@
       content="Which Linux systems are at risk, why are they at risk, and what is the most practical way to remediate them?"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="./assets/logo-lockup.png" />
-    <link rel="icon" href="./assets/logo-mark.png" type="image/png" />
-    <link rel="apple-touch-icon" href="./assets/logo-mark.png" />
+    <meta property="og:image" content="./assets/logo-lockup.png?v=5" />
+    <link rel="icon" href="./assets/logo-mark.png?v=5" type="image/png" />
+    <link rel="apple-touch-icon" href="./assets/logo-mark.png?v=5" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=3" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -31,7 +31,7 @@
     <header class="site-header" data-header>
       <div class="wrap header-inner">
         <a class="wordmark" href="#top" aria-label="LinuxLens home">
-          <img class="logo-mark" src="./assets/logo-mark.png" alt="" width="40" height="40" />
+          <img class="logo-mark" src="./assets/logo-mark.png?v=5" alt="" width="40" height="40" />
           <span class="brand"><span class="brand-linux">Linux</span><span class="brand-lens">Lens</span></span>
         </a>
         <nav class="nav" data-nav aria-label="Primary">
@@ -75,7 +75,7 @@
           </div>
 
           <aside class="hero-visual">
-            <img class="hero-logo" src="./assets/logo-mark.png" alt="LinuxLens mark: a penguin seen through a lens" />
+            <img class="hero-logo" src="./assets/logo-mark.png?v=5" alt="LinuxLens mark: a penguin seen through a lens" />
             <div class="terminal" aria-label="Example collector output">
               <div class="terminal-bar">
                 <span>linuxlens collect</span>
@@ -474,6 +474,10 @@ linuxlens assess --from-archive ./host-prod-db-01.tar.gz \
               <label for="notes">Context (optional)</label>
               <textarea id="notes" name="notes" rows="3" placeholder="EOL RHEL, no-reboot databases, offline requirement…"></textarea>
             </div>
+            <div class="hp" aria-hidden="true">
+              <label for="website">Website</label>
+              <input id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
             <p class="form-error" data-form-error hidden>Please complete the required fields with a valid work email.</p>
             <button class="btn btn-primary" type="submit">Request snapshot</button>
             <p class="form-ok" data-form-ok hidden>
@@ -488,7 +492,7 @@ linuxlens assess --from-archive ./host-prod-db-01.tar.gz \
       <div class="wrap footer-inner">
         <div>
           <p class="wordmark footer-mark">
-            <img class="logo-mark" src="./assets/logo-mark.png" alt="" width="36" height="36" />
+            <img class="logo-mark" src="./assets/logo-mark.png?v=5" alt="" width="36" height="36" />
             <span class="brand"><span class="brand-linux">Linux</span><span class="brand-lens">Lens</span></span>
           </p>
           <p>See your Linux risk before it becomes an incident.</p>
@@ -502,6 +506,6 @@ linuxlens assess --from-archive ./host-prod-db-01.tar.gz \
       </div>
     </footer>
 
-    <script src="./script.js?v=3"></script>
+    <script src="./script.js?v=5"></script>
   </body>
 </html>

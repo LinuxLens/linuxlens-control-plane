@@ -140,6 +140,7 @@ code {
   height: 40px;
   object-fit: contain;
   display: block;
+  background: transparent;
 }
 
 .brand {
@@ -246,6 +247,8 @@ code {
 .hero-logo {
   width: min(220px, 46vw);
   height: auto;
+  background: transparent;
+  filter: drop-shadow(0 18px 40px rgba(0, 102, 255, 0.28));
 }
 
 .btn {
@@ -724,6 +727,14 @@ textarea:focus {
 .form-ok {
   color: var(--healthy);
   margin: 0;
+}
+
+.hp {
+  position: absolute;
+  left: -9999px;
+  height: 0;
+  width: 0;
+  overflow: hidden;
 }
 
 .site-footer {

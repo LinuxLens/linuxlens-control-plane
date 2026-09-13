@@ -3,7 +3,11 @@
   "private": true,
   "description": "LinuxLens product control plane, open-source CLI, and marketing website",
   "scripts": {
-    "dev:website": "python3 -m http.server 4173 --directory website",
+    "git:dirty": "node scripts/list-dirty-stack-repos.cjs",
+    "ci": "node scripts/ci-status.cjs",
+    "ci:local": "node scripts/ci-status.cjs",
+    "ci:once": "node scripts/ci-status.cjs --once",
+    "dev:website": "npm --prefix website run dev",
     "deploy:website": "node scripts/deploy-website.cjs",
     "cli:install": "python3 -m venv .venv && .venv/bin/pip install -e ./cli",
     "cli:assess": "LINUXLENS_CONTROL_PLANE=$PWD .venv/bin/linuxlens assess localhost"

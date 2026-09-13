@@ -10,6 +10,11 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+node_modules/
+website/node_modules/
+website/assets/*.orig.jpg
+.env
+.env.local
 linuxlens-evidence.json
 linuxlens-assessment.tar.gz
 *.tar.gz

@@ -1,2 +1,8 @@
 Dockerfile
 .dockerignore
+node_modules
+npm-debug.log*
+.git
+*.md
+*.orig.jpg
+_preview-blend.jpg
