@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LinuxLens — See your Linux risk before it becomes an incident</title>
+    <meta
+      name="description"
+      content="Vendor-neutral Linux estate risk and remediation decisions. Lifecycle, patching, operational constraint, and a practical plan — not a CVE dump or a vendor pitch."
+    />
+    <meta property="og:title" content="LinuxLens — See your Linux risk before it becomes an incident" />
+    <meta
+      property="og:description"
+      content="Which Linux systems are at risk, why are they at risk, and what is the most practical way to remediate them?"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="./assets/logo-lockup.png" />
+    <link rel="icon" href="./assets/logo-mark.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./assets/logo-mark.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="wrap header-inner">
+        <a class="wordmark" href="#top" aria-label="LinuxLens home">
+          <img class="logo-mark" src="./assets/logo-mark.png" alt="" width="40" height="40" />
+          <span class="brand"><span class="brand-linux">Linux</span><span class="brand-lens">Lens</span></span>
+        </a>
+        <nav class="nav" data-nav aria-label="Primary">
+          <a href="#get-started">Get started</a>
+          <a href="#product">Product</a>
+          <a href="#how">How it works</a>
+          <a href="#risk">Risk model</a>
+          <a href="#editions">Editions</a>
+          <a class="nav-cta" href="#get-started">Run on a server</a>
+        </nav>
+        <button class="menu-btn" type="button" data-menu-btn aria-expanded="false" aria-controls="mobile-nav">
+          Menu
+        </button>
+      </div>
+      <nav id="mobile-nav" class="mobile-nav" data-mobile-nav hidden>
+        <a href="#get-started">Get started</a>
+        <a href="#product">Product</a>
+        <a href="#how">How it works</a>
+        <a href="#risk">Risk model</a>
+        <a href="#editions">Editions</a>
+        <a href="#snapshot">Request a snapshot</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Linux estate intelligence</p>
+            <h1>See your Linux risk before it becomes an incident.</h1>
+            <p class="lede">
+              LinuxLens is a vendor-neutral assessment of lifecycle, patching, security exposure,
+              and operational constraint. It answers which systems are at risk, why, and what is
+              the most practical fix — not a CVE list, and not a product pitch.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#get-started">Run on your server</a>
+              <a class="btn btn-ghost" href="#product">See the product</a>
+            </div>
+            <p class="hero-note">Open source · Read-only collector · Offline mode for regulated estates · Deterministic assessment</p>
+          </div>
+
+          <aside class="hero-visual">
+            <img class="hero-logo" src="./assets/logo-mark.png" alt="LinuxLens mark: a penguin seen through a lens" />
+            <div class="terminal" aria-label="Example collector output">
+              <div class="terminal-bar">
+                <span>linuxlens collect</span>
+                <span class="terminal-mode">offline · facts only</span>
+              </div>
+              <pre><code><span class="t-muted">$</span> linuxlens collect
+<span class="t-ok">82</span> Linux systems assessed
+
+<span class="band critical">14</span> Critical
+<span class="band high">19</span> High
+<span class="band elevated">21</span> Elevated
+<span class="band healthy">28</span> Healthy
+
+Immediate findings
+  <span class="t-warn">11</span> end-of-life systems
+  <span class="t-warn">17</span> systems requiring security updates
+  <span class="t-warn">8</span>  high-risk, reboot operationally difficult
+  <span class="t-muted">6</span>  approaching lifecycle milestones</code></pre>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="get-started">
+        <div class="wrap">
+          <header class="section-head">
+            <p class="eyebrow">Open source</p>
+            <h2>Run LinuxLens on your server.</h2>
+            <p>
+              Install the CLI, collect facts, and get a deterministic risk assessment.
+              Nothing is uploaded. No packages, kernels, or services are changed.
+            </p>
+          </header>
+
+          <div class="runbook">
+            <article>
+              <h3>1. Install</h3>
+              <pre class="code-block"><code>curl -fsSL https://linuxlens.suherman.net/install.sh | bash
+source ~/.linuxlens_env</code></pre>
+              <p>Or clone <a href="https://github.com/LinuxLens/linuxlens-control-plane">the GitHub repository</a> and install the CLI from <code>./cli</code>.</p>
+            </article>
+            <article>
+              <h3>2. Assess this host</h3>
+              <pre class="code-block"><code>linuxlens assess localhost</code></pre>
+              <p>Collects inventory and prints lifecycle, patch posture, LinuxLens risk (0–100), and capability-first remediation options.</p>
+            </article>
+            <article>
+              <h3>3. Offline / regulated</h3>
+              <pre class="code-block"><code>linuxlens collect --archive ./linuxlens-assessment.tar.gz
+# copy the archive out, then:
+linuxlens assess --from-archive ./linuxlens-assessment.tar.gz</code></pre>
+              <p>Use when hosts must not reach the Internet. The archive contains structured evidence only.</p>
+            </article>
+          </div>
+
+          <div class="runbook-extra">
+            <div>
+              <h3>Never collected</h3>
+              <ul>
+                <li>Passwords and private keys</li>
+                <li>API tokens and secrets</li>
+                <li>Database contents and documents</li>
+                <li>User home-directory data</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Many servers</h3>
+              <pre class="code-block"><code># on each host (Ansible / SSH)
+linuxlens collect --archive host-$(hostname).tar.gz
+
+# on your workstation
+linuxlens assess --from-archive ./host-prod-db-01.tar.gz \
+  --criticality critical \
+  --maintenance-window quarterly \
+  --workload postgresql</code></pre>
+            </div>
+          </div>
+
+          <p class="runbook-links">
+            <a class="btn btn-primary" href="https://github.com/LinuxLens/linuxlens-control-plane">View on GitHub</a>
+            <a class="btn btn-ghost" href="./GETTING-STARTED.md">Full getting-started guide</a>
+            <a class="btn btn-ghost" href="./install.sh">install.sh</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="strip" aria-label="Who it is for">
+        <div class="wrap strip-inner">
+          <p>Built for platform engineers, SREs, infrastructure leaders, CISOs, consultants, and MSPs.</p>
+          <ul>
+            <li>Banks &amp; regulated estates</li>
+            <li>Mixed RHEL / Ubuntu / SUSE</li>
+            <li>Consultants who cannot upload</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="product">
+        <div class="wrap">
+          <header class="section-head">
+            <p class="eyebrow">The gap</p>
+            <h2>Scanners count CVEs. LinuxLens explains the estate.</h2>
+            <p>
+              Vulnerability tools answer which CVEs exist. Vendor consoles answer support status
+              for one family. LinuxLens answers the question operators and executives actually ask.
+            </p>
+          </header>
+
+          <div class="compare">
+            <article>
+              <h3>Typical output</h3>
+              <ul>
+                <li>CVSS-ranked vulnerability list</li>
+                <li>One vendor’s support matrix</li>
+                <li>Live-patch product eligibility</li>
+                <li>A consulting spreadsheet that ages immediately</li>
+              </ul>
+            </article>
+            <article class="compare-accent">
+              <h3>LinuxLens output</h3>
+              <ul>
+                <li>Composite risk with lifecycle, patch lag, and reboot constraint</li>
+                <li>Vendor-neutral mixed-estate view</li>
+                <li>Required capability, then optional providers</li>
+                <li>Repeatable, evidence-backed assessment and reports</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="estate-panel" aria-label="Example estate overview">
+            <div class="estate-top">
+              <div>
+                <p class="eyebrow">Overview</p>
+                <h3>Linux estate</h3>
+              </div>
+              <p class="estate-count"><strong>284</strong> servers</p>
+            </div>
+            <div class="bands">
+              <div class="band-card healthy"><span>149</span> Healthy</div>
+              <div class="band-card watch"><span>53</span> Watch</div>
+              <div class="band-card high"><span>49</span> High</div>
+              <div class="band-card critical"><span>33</span> Critical</div>
+            </div>
+            <div class="attention">
+              <h4>Immediate attention</h4>
+              <ul>
+                <li>33 critical systems</li>
+                <li>18 end-of-life systems</li>
+                <li>24 systems cannot easily tolerate reboot-based patching</li>
+                <li>12 operating systems reach lifecycle milestones within 180 days</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="how">
+        <div class="wrap">
+          <header class="section-head">
+            <p class="eyebrow">How it works</p>
+            <h2>Facts in. Decisions out. No silent vendor default.</h2>
+          </header>
+
+          <ol class="pipeline">
+            <li>
+              <span class="step">01</span>
+              <h3>Collect</h3>
+              <p>A read-only collector gathers host, OS, kernel, package, update, and operational metadata. Passwords, keys, and customer data stay out.</p>
+            </li>
+            <li>
+              <span class="step">02</span>
+              <h3>Assess</h3>
+              <p>A deterministic engine scores lifecycle, patch lag, exposure, and operational constraint against published rules — not an LLM judgement.</p>
+            </li>
+            <li>
+              <span class="step">03</span>
+              <h3>Recommend capability</h3>
+              <p>Patch, live patch, upgrade, migrate, extended support, compensate, or accept risk. The capability comes first.</p>
+            </li>
+            <li>
+              <span class="step">04</span>
+              <h3>Map providers</h3>
+              <p>Only then: compatible products. “Live kernel patching is recommended.” Then, optionally, who can fulfil it.</p>
+            </li>
+          </ol>
+
+          <div class="modes">
+            <article>
+              <h3>Connected</h3>
+              <p>Hosts → collector → HTTPS → LinuxLens API. Best for SaaS estates.</p>
+            </article>
+            <article>
+              <h3>Offline</h3>
+              <p>Collector writes <code>linuxlens-assessment.tar.gz</code>. Manual import. Nothing needs outbound Internet.</p>
+            </article>
+            <article>
+              <h3>Relay</h3>
+              <p>Hundreds or thousands of servers. Only the relay needs outbound connectivity.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="risk">
+        <div class="wrap risk-grid">
+          <div>
+            <p class="eyebrow">LinuxLens risk</p>
+            <h2>A score executives and engineers can both defend.</h2>
+            <p>
+              Raw CVSS is not estate risk. LinuxLens uses an explicit 0–100 model. Every Critical
+              or High judgement cites collector evidence or declared business context.
+            </p>
+            <dl class="weights">
+              <div><dt>Vulnerability exposure</dt><dd>30%</dd></div>
+              <div><dt>Lifecycle exposure</dt><dd>25%</dd></div>
+              <div><dt>Patch lag</dt><dd>15%</dd></div>
+              <div><dt>Operational constraints</dt><dd>15%</dd></div>
+              <div><dt>External exposure</dt><dd>10%</dd></div>
+              <div><dt>Business criticality</dt><dd>5%</dd></div>
+            </dl>
+            <ol class="bands-legend">
+              <li><i class="healthy"></i> 0–19 Healthy</li>
+              <li><i class="watch"></i> 20–39 Watch</li>
+              <li><i class="elevated"></i> 40–59 Elevated</li>
+              <li><i class="high"></i> 60–79 High</li>
+              <li><i class="critical"></i> 80–100 Critical</li>
+            </ol>
+          </div>
+
+          <article class="host-card">
+            <header>
+              <p class="host-id">prod-payment-db-01</p>
+              <p class="host-meta">RHEL 7.9 · PostgreSQL · quarterly window</p>
+            </header>
+            <div class="score-row">
+              <div class="score critical">
+                <span class="score-num">91</span>
+                <span class="score-band">Critical</span>
+              </div>
+              <ul class="reasons">
+                <li>Operating system outside standard lifecycle</li>
+                <li>17 security updates outstanding</li>
+                <li>Kernel security exposure detected</li>
+                <li>487-day uptime</li>
+                <li>Production-critical payments database</li>
+                <li>Reboot would require a payment-service outage</li>
+              </ul>
+            </div>
+            <div class="reco">
+              <p class="reco-kicker">Primary recommendation</p>
+              <p>
+                Apply non-disruptive mitigation immediately, then schedule operating system
+                migration as the long-term remediation.
+              </p>
+              <ul class="options">
+                <li><strong>Live patch</strong> — low impact, no downtime, immediate risk reduction</li>
+                <li><strong>Extended support</strong> — runway while migration is planned</li>
+                <li><strong>Migrate / upgrade</strong> — durable fix, downtime required</li>
+              </ul>
+              <p class="reco-note">Compatible providers are listed after the capability — never instead of it.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="journey">
+        <div class="wrap">
+          <header class="section-head">
+            <p class="eyebrow">Customer journey</p>
+            <h2>Start with a snapshot. Grow into continuous posture.</h2>
+          </header>
+          <ol class="journey">
+            <li>
+              <h3>1. Linux Risk Snapshot</h3>
+              <p>Run <code>linuxlens collect</code>. Get band counts and immediate findings in hours, not a six-week project.</p>
+            </li>
+            <li>
+              <h3>2. Deep Assessment</h3>
+              <p>Add criticality, windows, exposure, and regulatory context. Leave with a roadmap and investment plan.</p>
+            </li>
+            <li>
+              <h3>3. Remediation</h3>
+              <p>Act on capabilities. Provider products appear only as fulfilment options.</p>
+            </li>
+            <li>
+              <h3>4. Continuous LinuxLens</h3>
+              <p>Scheduled collection, drift, reassessment, alerts, and tracking. From engagement to platform.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" id="editions">
+        <div class="wrap">
+          <header class="section-head">
+            <p class="eyebrow">Editions</p>
+            <h2>From a one-off assessment to a partner portfolio.</h2>
+          </header>
+
+          <div class="edition-tabs" role="tablist" aria-label="Product editions">
+            <button type="button" role="tab" aria-selected="true" data-edition="snapshot">Snapshot</button>
+            <button type="button" role="tab" aria-selected="false" data-edition="professional">Professional</button>
+            <button type="button" role="tab" aria-selected="false" data-edition="enterprise">Enterprise</button>
+            <button type="button" role="tab" aria-selected="false" data-edition="msp">MSP</button>
+          </div>
+
+          <div class="edition-panel" data-edition-panel="snapshot">
+            <h3>LinuxLens Snapshot</h3>
+            <p>One-off assessment for a small-to-medium estate. Rapid risk snapshot, executive summary, technical findings. Connected or offline import.</p>
+            <p class="edition-cmd"><code>linuxlens collect</code> · <code>linuxlens assess</code></p>
+          </div>
+          <div class="edition-panel" data-edition-panel="professional" hidden>
+            <h3>LinuxLens Professional</h3>
+            <p>Continuous Linux posture management: scheduled scans, dashboard, history and trends, reports, and remediation tracking.</p>
+          </div>
+          <div class="edition-panel" data-edition-panel="enterprise" hidden>
+            <h3>LinuxLens Enterprise</h3>
+            <p>SSO, RBAC, multiple estates, offline assessment, private deployment, ITSM, custom policy, and compliance evidence.</p>
+          </div>
+          <div class="edition-panel" data-edition-panel="msp" hidden>
+            <h3>LinuxLens MSP</h3>
+            <p>Many customers and estates, partner dashboard, white-labelled reporting, delegated access. Licensing recommendations stay capability-first.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section principles" id="principles">
+        <div class="wrap">
+          <header class="section-head">
+            <p class="eyebrow">Principles</p>
+            <h2>Independence is the product.</h2>
+          </header>
+          <div class="principle-grid">
+            <article>
+              <h3>Vendor-neutral</h3>
+              <p>TuxCare, Canonical, Red Hat, and SUSE can fulfil a capability. None of them own the score.</p>
+            </article>
+            <article>
+              <h3>Capability-first</h3>
+              <p>We never lead with “buy KernelCare.” We lead with live kernel patching, then who can deliver it.</p>
+            </article>
+            <article>
+              <h3>Read-only</h3>
+              <p>The collector does not patch, enrol, or change services. Safe to run on production hosts.</p>
+            </article>
+            <article>
+              <h3>Deterministic</h3>
+              <p>AI may explain a Critical host. It does not decide the host is Critical. Every answer traces to evidence.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta" id="snapshot">
+        <div class="wrap cta-grid">
+          <div>
+            <p class="eyebrow">Start</p>
+            <h2>Request a Linux Risk Snapshot</h2>
+            <p>
+              Tell us about the estate. We will follow up with a low-friction snapshot path —
+              including offline collection when nothing may leave the building.
+            </p>
+          </div>
+          <form class="snapshot-form" data-form novalidate>
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" name="name" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="email">Work email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="role">Role</label>
+              <select id="role" name="role" required>
+                <option value="">Select…</option>
+                <option>Platform / Linux engineer</option>
+                <option>Head of infrastructure</option>
+                <option>CISO / risk</option>
+                <option>Consultant</option>
+                <option>MSP / partner</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="estate">Approximate Linux estate size</label>
+              <select id="estate" name="estate" required>
+                <option value="">Select…</option>
+                <option>Under 50</option>
+                <option>50–250</option>
+                <option>250–1,000</option>
+                <option>1,000+</option>
+              </select>
+            </div>
+            <div class="field field-full">
+              <label for="notes">Context (optional)</label>
+              <textarea id="notes" name="notes" rows="3" placeholder="EOL RHEL, no-reboot databases, offline requirement…"></textarea>
+            </div>
+            <p class="form-error" data-form-error hidden>Please complete the required fields with a valid work email.</p>
+            <button class="btn btn-primary" type="submit">Request snapshot</button>
+            <p class="form-ok" data-form-ok hidden>
+              Thank you. We have your request and will reply to the address you provided.
+            </p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <div>
+          <p class="wordmark footer-mark">
+            <img class="logo-mark" src="./assets/logo-mark.png" alt="" width="36" height="36" />
+            <span class="brand"><span class="brand-linux">Linux</span><span class="brand-lens">Lens</span></span>
+          </p>
+          <p>See your Linux risk before it becomes an incident.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#get-started">Get started</a>
+          <a href="#product">Product</a>
+          <a href="#how">How it works</a>
+          <a href="#principles">Principles</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./script.js?v=3"></script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/report.schema.json",
+  "title": "LinuxLens report",
+  "description": "Executive or technical report generated from assessment objects. Counts must match the source assessment.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "estate_id",
+    "assessment_id",
+    "title",
+    "generated_at",
+    "aggregates"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": { "type": "string" },
+    "type": { "enum": ["executive", "technical"] },
+    "format": { "enum": ["json", "pdf", "csv", "xlsx"] },
+    "organisation_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "estate_id": { "type": "string" },
+    "assessment_id": { "type": "string" },
+    "customer_name": { "type": "string" },
+    "title": { "type": "string" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "white_label": { "type": "boolean" },
+    "aggregates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hosts", "critical", "high", "end_of_life", "immediate_remediation"],
+      "properties": {
+        "hosts": { "type": "integer", "minimum": 0 },
+        "healthy": { "type": "integer", "minimum": 0 },
+        "watch": { "type": "integer", "minimum": 0 },
+        "elevated": { "type": "integer", "minimum": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "critical": { "type": "integer", "minimum": 0 },
+        "end_of_life": { "type": "integer", "minimum": 0 },
+        "immediate_remediation": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "body": { "type": "string" },
+          "grounded": {
+            "type": "boolean",
+            "description": "True when body was produced from assessment objects; required for LLM narratives."
+          }
+        }
+      }
+    },
+    "host_rows": {
+      "type": "array",
+      "description": "Required for type=technical.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["host_id", "os", "risk_score", "risk_band"],
+        "properties": {
+          "host_id": { "type": "string" },
+          "os": { "type": "string" },
+          "kernel": { "type": "string" },
+          "lifecycle_phase": { "type": "string" },
+          "cve_exposure": { "type": "string" },
+          "patch_lag": { "type": "string" },
+          "uptime_days": { "type": "number" },
+          "reboot_required": { "type": "boolean" },
+          "risk_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "risk_band": {
+            "enum": ["healthy", "watch", "elevated", "high", "critical"]
+          },
+          "recommended_action": { "type": "string" }
+        }
+      }
+    }
+  }
+}

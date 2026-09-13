@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/finding.schema.json",
+  "title": "LinuxLens finding",
+  "description": "A deterministic assessment finding. Narratives may be generated later but reasons must be evidence keys.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "host_id",
+    "code",
+    "class",
+    "severity",
+    "title",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": { "type": "string" },
+    "organisation_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "estate_id": { "type": "string" },
+    "assessment_id": { "type": "string" },
+    "scan_id": { "type": "string" },
+    "host_id": { "type": "string" },
+    "code": {
+      "type": "string",
+      "description": "Stable rule id such as LIFECYCLE-EOL."
+    },
+    "class": {
+      "enum": [
+        "lifecycle",
+        "patch",
+        "vulnerability",
+        "operational",
+        "coverage",
+        "remediation"
+      ]
+    },
+    "severity": {
+      "enum": ["healthy", "watch", "elevated", "high", "critical"]
+    },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "evidence": {
+      "type": "object",
+      "description": "Key/value facts copied from collector or knowledge. No secrets.",
+      "additionalProperties": true
+    },
+    "required_capability": {
+      "enum": [
+        "patch",
+        "live_patch",
+        "upgrade",
+        "migrate",
+        "extended_support",
+        "compensating_control",
+        "accept_risk"
+      ]
+    },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

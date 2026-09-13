@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/assessment.schema.json",
+  "title": "LinuxLens assessment",
+  "description": "Deterministic assessment of a host or an estate roll-up. Scores are never assigned by an LLM.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "scope",
+    "assessed_at",
+    "risk"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": { "type": "string" },
+    "scope": { "enum": ["host", "estate"] },
+    "organisation_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "estate_id": { "type": "string" },
+    "host_id": { "type": "string" },
+    "scan_id": { "type": "string" },
+    "assessed_at": { "type": "string", "format": "date-time" },
+    "policy_version": { "type": "string" },
+    "scoring_version": { "type": "string" },
+    "context_inferred": { "type": "boolean" },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "band", "components"],
+      "properties": {
+        "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "band": {
+          "enum": ["healthy", "watch", "elevated", "high", "critical"]
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "vulnerability_exposure",
+            "lifecycle_exposure",
+            "patch_lag",
+            "operational_constraints",
+            "external_exposure",
+            "business_criticality"
+          ],
+          "properties": {
+            "vulnerability_exposure": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "lifecycle_exposure": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "patch_lag": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "operational_constraints": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "external_exposure": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "business_criticality": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "weights": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "vulnerability_exposure": { "type": "number" },
+            "lifecycle_exposure": { "type": "number" },
+            "patch_lag": { "type": "number" },
+            "operational_constraints": { "type": "number" },
+            "external_exposure": { "type": "number" },
+            "business_criticality": { "type": "number" }
+          }
+        },
+        "reasons": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "enum": [
+            "standard",
+            "approaching_eol",
+            "extended",
+            "end_of_life",
+            "unknown"
+          ]
+        },
+        "standard_support_ends": { "type": "string", "format": "date" },
+        "days_to_standard_eol": { "type": "integer" },
+        "extended_support_ends": { "type": "string", "format": "date" },
+        "knowledge_ref": { "type": "string" }
+      }
+    },
+    "operational": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reboot_feasibility": { "enum": ["high", "low", "none", "unknown"] },
+        "migration_urgency": { "enum": ["low", "medium", "high"] },
+        "uptime_days": { "type": "number" }
+      }
+    },
+    "finding_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "remediation_id": { "type": "string" },
+    "coverage_gaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "aggregates": {
+      "type": "object",
+      "description": "Present when scope=estate.",
+      "additionalProperties": false,
+      "properties": {
+        "hosts": { "type": "integer", "minimum": 0 },
+        "healthy": { "type": "integer", "minimum": 0 },
+        "watch": { "type": "integer", "minimum": 0 },
+        "elevated": { "type": "integer", "minimum": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "critical": { "type": "integer", "minimum": 0 },
+        "end_of_life": { "type": "integer", "minimum": 0 },
+        "approaching_eol": { "type": "integer", "minimum": 0 },
+        "reboot_constrained": { "type": "integer", "minimum": 0 },
+        "immediate_remediation": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

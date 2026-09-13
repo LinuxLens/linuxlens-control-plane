@@ -1,0 +1,37 @@
+provider: generic-linux
+display_name: Generic Linux
+vendor_neutral: true
+required_for_complete_assessment: true
+description: >
+  Always-available fulfilment paths that do not depend on a commercial
+  remediation vendor. An assessment with only this file loaded is complete.
+
+products:
+  - id: vendor-security-updates
+    name: Distribution security updates
+    capabilities: [patch]
+    notes: Apply updates from the configured vendor or community repositories.
+
+  - id: conventional-reboot
+    name: Scheduled reboot to activate kernel and library updates
+    capabilities: [patch]
+    notes: Use when reboot_feasibility is high.
+
+  - id: in-place-release-upgrade
+    name: In-place operating system upgrade
+    capabilities: [upgrade]
+    notes: Same distribution family, supported target release.
+
+  - id: distro-migration
+    name: Migration to a supported Linux distribution
+    capabilities: [migrate]
+    notes: Used when the current distribution has no supported upgrade path.
+
+  - id: network-compensating-control
+    name: Network isolation or compensating control
+    capabilities: [compensating_control]
+
+  - id: documented-risk-acceptance
+    name: Time-bounded risk acceptance
+    capabilities: [accept_risk]
+    notes: Requires an owner and an expiry. Never implicit.

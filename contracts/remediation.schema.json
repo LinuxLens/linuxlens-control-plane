@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/remediation.schema.json",
+  "title": "LinuxLens remediation plan",
+  "description": "Capability-first remediation options. Compatible products are optional fulfilment, not the recommendation itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "host_id", "primary_recommendation", "options"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": { "type": "string" },
+    "organisation_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "estate_id": { "type": "string" },
+    "assessment_id": { "type": "string" },
+    "host_id": { "type": "string" },
+    "priority": { "enum": ["low", "medium", "high", "immediate"] },
+    "priority_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "primary_recommendation": { "type": "string" },
+    "options": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/option" }
+    }
+  },
+  "$defs": {
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "capability", "impact", "downtime", "purpose"],
+      "properties": {
+        "id": { "type": "string" },
+        "capability": {
+          "enum": [
+            "patch",
+            "live_patch",
+            "upgrade",
+            "migrate",
+            "extended_support",
+            "compensating_control",
+            "accept_risk"
+          ]
+        },
+        "title": { "type": "string" },
+        "impact": { "enum": ["low", "medium", "high"] },
+        "downtime": { "enum": ["none", "brief", "required", "extended"] },
+        "purpose": {
+          "enum": [
+            "immediate_risk_reduction",
+            "durable_fix",
+            "migration_runway",
+            "compensating",
+            "acceptance"
+          ]
+        },
+        "long_term_value": { "enum": ["low", "medium", "high"] },
+        "compatible_products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["provider", "product_id", "name"],
+            "properties": {
+              "provider": { "type": "string" },
+              "product_id": { "type": "string" },
+              "name": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

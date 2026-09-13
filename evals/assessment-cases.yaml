@@ -1,0 +1,120 @@
+schema_version: "1.0.0"
+specs: [LL-004, LL-005, LL-006]
+as_of: "2026-09-13"
+
+cases:
+  - id: AS-001
+    name: Clean supported host is Healthy
+    input:
+      os: { family: ubuntu, version: "22.04" }
+      knowledge: { support_phase: standard, days_to_standard_eol: 400 }
+      updates: { metadata_available: true, security_count: 0, available_count: 2 }
+      reboot_required: false
+      uptime_days: 12
+      kernel_security_exposure: false
+      business_context:
+        business_criticality: standard
+        maintenance_window: weekly
+    expect:
+      risk.band: healthy
+      risk.score: { lte: 19 }
+
+  - id: AS-002
+    name: Payment DB example approaches Critical
+    input:
+      host_id: prod-payment-db-01
+      os: { family: rhel, name: rhel, version: "7.9" }
+      knowledge: { support_phase: end_of_life }
+      kernel: { version: "3.10.0-1160" }
+      kernel_security_exposure: true
+      updates: { metadata_available: true, security_count: 17, available_count: 40 }
+      reboot_required: true
+      uptime_days: 487
+      business_context:
+        workload: postgresql
+        business_criticality: critical
+        maintenance_window: quarterly
+        internet_exposed: false
+    expect:
+      risk.band: critical
+      risk.score: { gte: 80 }
+      findings.present:
+        - code: LIFECYCLE-EOL
+        - code: PATCH-SECURITY-BACKLOG
+        - code: VULN-KERNEL-EXPOSURE
+        - code: OPS-EXCESSIVE-UPTIME
+      operational.reboot_feasibility: low
+      reasons.include:
+        - Operating system outside standard lifecycle
+        - outstanding security updates
+        - Kernel security exposure
+        - uptime
+        - production-critical
+        - reboot
+
+  - id: AS-003
+    name: Seventeen security updates produce a High or Critical patch finding
+    input:
+      updates: { metadata_available: true, security_count: 17 }
+      knowledge: { support_phase: standard, days_to_standard_eol: 800 }
+      uptime_days: 20
+      reboot_required: false
+    expect:
+      findings.present:
+        - code: PATCH-SECURITY-BACKLOG
+          severity: { in: [high, critical] }
+
+  - id: AS-004
+    name: Missing package metadata is a coverage gap, not Healthy patch
+    input:
+      updates: { metadata_available: false }
+      knowledge: { support_phase: standard, days_to_standard_eol: 800 }
+      uptime_days: 10
+    expect:
+      findings.present:
+        - code: PATCH-UNKNOWN
+      coverage_gaps.present: [PATCH-UNKNOWN]
+      risk.components.patch_lag: { gte: 40 }
+
+  - id: AS-005
+    name: No CVE feed still yields a complete assessment
+    input:
+      cve_feed: null
+      os: { family: rhel, version: "8.10" }
+      knowledge: { support_phase: standard, days_to_standard_eol: 900 }
+      updates: { metadata_available: true, security_count: 0 }
+      kernel_security_exposure: false
+    expect:
+      assessment.complete: true
+      findings.absent: [VULN-CVE]
+
+  - id: AS-006
+    name: CVSS 9.8 not-affected does not force Critical
+    input:
+      knowledge: { support_phase: standard, days_to_standard_eol: 900 }
+      updates: { metadata_available: true, security_count: 0 }
+      kernel_security_exposure: false
+      uptime_days: 14
+      reboot_required: false
+      business_context:
+        business_criticality: standard
+        maintenance_window: weekly
+      enrichment:
+        cves:
+          - id: CVE-EXAMPLE-1
+            cvss: 9.8
+            affected: false
+    expect:
+      risk.band: { neq: critical }
+      risk.score: { lte: 39 }
+
+  - id: AS-007
+    name: Snapshot without business context marks inferred operational defaults
+    input:
+      knowledge: { support_phase: standard, days_to_standard_eol: 500 }
+      updates: { metadata_available: true, security_count: 0 }
+      uptime_days: 40
+      business_context: null
+    expect:
+      context_inferred: true
+      operational.reboot_feasibility: { in: [unknown, low] }

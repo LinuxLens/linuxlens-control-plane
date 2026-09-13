@@ -1,0 +1,34 @@
+provider: suse
+display_name: SUSE
+vendor_neutral: false
+required_for_complete_assessment: false
+description: Optional fulfilment for SUSE Linux Enterprise estates.
+
+products:
+  - id: sle-live-patching
+    name: SUSE Linux Enterprise Live Patching
+    capabilities: [live_patch]
+    applies_when:
+      os.family: suse
+      kernel_security_exposure: true
+    language:
+      primary: Live kernel patching is recommended.
+      secondary: "Available provider: SUSE Linux Enterprise Live Patching."
+
+  - id: sle-ltss
+    name: SUSE Long Term Service Pack Support
+    capabilities: [extended_support]
+    applies_when:
+      os.family: suse
+      support_phase: [extended, approaching_eol, end_of_life]
+    language:
+      primary: Extended lifecycle support can create migration runway.
+      secondary: "Available provider: SUSE LTSS."
+
+  - id: suse-upgrade
+    name: SUSE release upgrade
+    capabilities: [upgrade]
+    applies_when:
+      os.family: suse
+    language:
+      primary: Upgrade to a supported SUSE Linux Enterprise release.

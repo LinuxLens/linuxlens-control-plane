@@ -1,0 +1,35 @@
+provider: redhat
+display_name: Red Hat
+vendor_neutral: false
+required_for_complete_assessment: false
+description: Optional fulfilment for Red Hat Enterprise Linux estates.
+
+products:
+  - id: rhel-els
+    name: Red Hat Enterprise Linux Extended Life Cycle Support
+    capabilities: [extended_support]
+    applies_when:
+      os.name: rhel
+      support_phase: [extended, end_of_life]
+    language:
+      primary: Extended lifecycle support can create migration runway.
+      secondary: "Available provider: Red Hat ELS."
+
+  - id: kpatch
+    name: Red Hat kpatch / kernel live patching
+    capabilities: [live_patch]
+    applies_when:
+      os.name: rhel
+      kernel_security_exposure: true
+    language:
+      primary: Live kernel patching is recommended.
+      secondary: "Available provider: Red Hat kernel live patching."
+
+  - id: leapp-upgrade
+    name: RHEL in-place upgrade (Leapp)
+    capabilities: [upgrade]
+    applies_when:
+      os.name: rhel
+    language:
+      primary: Upgrade to a supported RHEL release.
+      secondary: "Available provider: Red Hat in-place upgrade tooling."

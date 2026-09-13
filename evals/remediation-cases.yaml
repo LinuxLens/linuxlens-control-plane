@@ -1,0 +1,84 @@
+schema_version: "1.0.0"
+specs: [LL-007, LL-009]
+as_of: "2026-09-13"
+
+cases:
+  - id: RM-001
+    name: Legacy RHEL database sequences mitigation then migration
+    input:
+      host_id: prod-db-03
+      os: { family: rhel, name: rhel, version: "7.9" }
+      knowledge: { support_phase: end_of_life }
+      uptime_days: 428
+      kernel_security_exposure: true
+      updates: { security_count: 8 }
+      business_context:
+        workload: postgresql
+        business_criticality: critical
+        maintenance_window: quarterly
+      providers: [generic-linux]
+    expect:
+      options.capabilities_include:
+        - upgrade
+        - live_patch
+        - extended_support
+      primary_recommendation.includes: non-disruptive
+      primary_recommendation.includes: migration
+      options.no_provider_required: true
+
+  - id: RM-002
+    name: Live patch recommended with zero commercial providers
+    input:
+      kernel_security_exposure: true
+      reboot_feasibility: low
+      knowledge: { support_phase: standard, days_to_standard_eol: 600 }
+      providers: [generic-linux]
+    expect:
+      options.capabilities_include: [live_patch]
+      assessment.complete: true
+      compatible_products.optional: true
+      findings.titles_absent:
+        - Buy KernelCare
+        - TuxCare KernelCare Enterprise
+
+  - id: RM-003
+    name: TuxCare appears only as fulfilment after capability
+    input:
+      kernel_security_exposure: true
+      reboot_feasibility: none
+      providers: [generic-linux, tuxcare]
+    expect:
+      recommended_capability_text: Live kernel patching is recommended.
+      compatible_products.may_include:
+        provider: tuxcare
+        product_id: kernelcare-enterprise
+      option_count_for_live_patch: 1
+
+  - id: RM-004
+    name: Healthy host suggests no vendor product
+    input:
+      knowledge: { support_phase: standard, days_to_standard_eol: 800 }
+      updates: { security_count: 0, available_count: 0, metadata_available: true }
+      kernel_security_exposure: false
+      reboot_required: false
+      uptime_days: 9
+      business_context:
+        business_criticality: standard
+        maintenance_window: weekly
+      providers: [generic-linux, tuxcare, canonical, redhat, suse]
+    expect:
+      risk.band: healthy
+      compatible_products.from_tuxcare: []
+      options.capabilities_absent: [extended_support]
+
+  - id: RM-005
+    name: Two providers do not split one capability into two recommendations
+    input:
+      kernel_security_exposure: true
+      reboot_feasibility: low
+      os: { family: ubuntu, version: "22.04" }
+      providers: [generic-linux, tuxcare, canonical]
+    expect:
+      options.where.capability: live_patch
+      options.count: 1
+      options[0].compatible_products.min_count: 1

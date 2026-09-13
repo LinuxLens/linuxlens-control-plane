@@ -1,0 +1,75 @@
+schema_version: "1.0.0"
+component: patch_lag
+spec: LL-004
+overall_weight: 0.15
+description: Patch lag from outstanding updates and whether a reboot is still pending.
+
+bands:
+  healthy: [0, 19]
+  watch: [20, 39]
+  elevated: [40, 59]
+  high: [60, 79]
+  critical: [80, 100]
+
+rules:
+  - id: PATCH-META-UNKNOWN
+    when:
+      updates.metadata_available: false
+    score: 50
+    finding_severity: elevated
+    finding_code: PATCH-UNKNOWN
+    title: Update metadata could not be read
+    coverage_gap: true
+
+  - id: PATCH-SECURITY-CRIT
+    when:
+      security_update_count: { gte: 15 }
+    score: 88
+    finding_severity: critical
+    finding_code: PATCH-SECURITY-BACKLOG
+    title: Large outstanding security-update backlog
+    required_capability: patch
+
+  - id: PATCH-SECURITY-HIGH
+    when:
+      security_update_count: { gte: 5, lt: 15 }
+    score: 70
+    finding_severity: high
+    finding_code: PATCH-SECURITY-BACKLOG
+    required_capability: patch
+
+  - id: PATCH-SECURITY-ELEVATED
+    when:
+      security_update_count: { gte: 1, lt: 5 }
+    score: 44
+    finding_severity: elevated
+    finding_code: PATCH-SECURITY-BACKLOG
+    required_capability: patch
+
+  - id: PATCH-TOTAL-LAG
+    when:
+      available_update_count: { gte: 50 }
+      security_update_count: 0
+    score: 32
+    finding_severity: watch
+    finding_code: PATCH-GENERAL-LAG
+    title: Large non-security update backlog
+
+  - id: PATCH-REBOOT-PENDING
+    when:
+      reboot_required: true
+    score_floor: 36
+    finding_severity: elevated
+    finding_code: PATCH-REBOOT-PENDING
+    title: Updates applied but reboot still required
+
+  - id: PATCH-CURRENT
+    when:
+      security_update_count: 0
+      available_update_count: { lt: 10 }
+      reboot_required: false
+      updates.metadata_available: true
+    score: 8
+    finding_severity: healthy
+
+combine: max_then_floor

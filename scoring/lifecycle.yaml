@@ -1,0 +1,71 @@
+schema_version: "1.0.0"
+component: lifecycle_exposure
+spec: LL-003
+overall_weight: 0.25
+description: >
+  Score operating-system lifecycle exposure from curated knowledge dates.
+  Do not invent end-of-support dates.
+
+bands:
+  healthy: [0, 19]
+  watch: [20, 39]
+  elevated: [40, 59]
+  high: [60, 79]
+  critical: [80, 100]
+
+approaching_eol_days: 180
+
+rules:
+  - id: LIFECYCLE-EOL
+    when:
+      support_phase: end_of_life
+    score: 100
+    finding_severity: critical
+    finding_code: LIFECYCLE-EOL
+    title: Operating system outside standard lifecycle
+
+  - id: LIFECYCLE-EXTENDED
+    when:
+      support_phase: extended
+    score: 72
+    finding_severity: high
+    finding_code: LIFECYCLE-EXTENDED
+    title: Operating system on extended support
+
+  - id: LIFECYCLE-WITHIN-180
+    when:
+      support_phase: approaching_eol
+      days_to_standard_eol: { lte: 180 }
+    score: 68
+    finding_severity: high
+    finding_code: LIFECYCLE-APPROACHING
+    title: Operating system reaches a lifecycle milestone within 180 days
+
+  - id: LIFECYCLE-WITHIN-365
+    when:
+      support_phase: standard
+      days_to_standard_eol: { lte: 365, gt: 180 }
+    score: 36
+    finding_severity: watch
+    finding_code: LIFECYCLE-WATCH
+    title: Operating system support ends within 12 months
+
+  - id: LIFECYCLE-STANDARD
+    when:
+      support_phase: standard
+      days_to_standard_eol: { gt: 365 }
+    score: 8
+    finding_severity: healthy
+
+  - id: LIFECYCLE-UNKNOWN
+    when:
+      support_phase: unknown
+    score: 50
+    finding_severity: elevated
+    finding_code: LIFECYCLE-UNKNOWN
+    title: Lifecycle status could not be determined
+    coverage_gap: true
+
+notes:
+  - CentOS 7 standard support ended 2024-06-30; default phase is end_of_life unless extended coverage is evidenced.
+  - Knowledge records belong in linuxlens-knowledge; this file only scores known phases.

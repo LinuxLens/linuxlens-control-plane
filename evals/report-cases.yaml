@@ -1,0 +1,76 @@
+schema_version: "1.0.0"
+spec: LL-008
+as_of: "2026-09-13"
+
+cases:
+  - id: RP-001
+    name: Executive aggregates match the assessment exactly
+    input:
+      assessment:
+        scope: estate
+        aggregates:
+          hosts: 482
+          critical: 37
+          high: 91
+          elevated: 80
+          watch: 74
+          healthy: 200
+          end_of_life: 54
+          immediate_remediation: 72
+    expect:
+      report.type: executive
+      report.aggregates.hosts: 482
+      report.aggregates.critical: 37
+      report.aggregates.high: 91
+      report.aggregates.end_of_life: 54
+      report.aggregates.immediate_remediation: 72
+      report.sections.include:
+        - top_risks
+        - business_impact
+        - ninety_day_priorities
+        - lifecycle_outlook
+        - operational_constraints
+        - recommended_investment
+
+  - id: RP-002
+    name: Technical report includes required host fields
+    input:
+      hosts:
+        - host_id: prod-db-03
+          os: RHEL 7.9
+          kernel: 3.10.0-1160
+          lifecycle_phase: end_of_life
+          risk_score: 91
+          risk_band: critical
+    expect:
+      report.type: technical
+      host_rows[0]:
+        host_id: prod-db-03
+        os: present
+        kernel: present
+        lifecycle_phase: present
+        patch_lag: present
+        uptime_days: present
+        reboot_required: present
+        risk_score: 91
+        risk_band: critical
+        recommended_action.capability_first: true
+
+  - id: RP-003
+    name: LLM narrative cannot change counts
+    input:
+      assessment.aggregates.critical: 33
+      llm_narrative: "There are 12 critical systems."
+    expect:
+      report.aggregates.critical: 33
+      report.sections.where.id: executive_narrative
+      grounded: true
+
+  - id: RP-004
+    name: White-label does not alter scores
+    input:
+      white_label: true
+      assessment.aggregates.critical: 33
+    expect:
+      report.white_label: true
+      report.aggregates.critical: 33

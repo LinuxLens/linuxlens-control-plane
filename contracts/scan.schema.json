@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/scan.schema.json",
+  "title": "LinuxLens scan",
+  "description": "One collection/import event for an estate or host set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "estate_id",
+    "mode",
+    "status",
+    "started_at"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": { "type": "string" },
+    "organisation_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "estate_id": { "type": "string" },
+    "mode": { "enum": ["connected", "offline", "relay"] },
+    "status": {
+      "enum": ["accepted", "ingesting", "assessing", "completed", "failed"]
+    },
+    "collector_version": { "type": "string" },
+    "host_count": { "type": "integer", "minimum": 0 },
+    "started_at": { "type": "string", "format": "date-time" },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "source": {
+      "enum": ["collector", "archive_import", "relay", "manual"]
+    },
+    "assessment_id": { "type": "string" },
+    "error": { "type": "string" }
+  }
+}

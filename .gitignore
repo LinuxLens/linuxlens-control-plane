@@ -1,0 +1,16 @@
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+linuxlens-evidence.json
+linuxlens-assessment.tar.gz
+*.tar.gz
+.linuxlens_env

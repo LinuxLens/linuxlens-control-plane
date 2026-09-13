@@ -1,0 +1,95 @@
+schema_version: "1.0.0"
+component: remediation_priority
+spec: LL-007
+description: >
+  Rank remediation work. Technical LinuxLens risk dominates; business
+  criticality and reboot constraint adjust priority, they do not invent findings.
+
+priority_bands:
+  low: [0, 39]
+  medium: [40, 59]
+  high: [60, 79]
+  immediate: [80, 100]
+
+inputs:
+  linuxlens_risk: { weight: 0.70 }
+  business_criticality: { weight: 0.20 }
+  reboot_constraint: { weight: 0.10 }
+
+business_criticality_scores:
+  low: 10
+  standard: 40
+  high: 70
+  critical: 100
+
+reboot_constraint_scores:
+  high: 10
+  unknown: 40
+  low: 75
+  none: 100
+
+capability_selection:
+  - id: SELECT-PATCH
+    when:
+      security_update_count: { gte: 1 }
+      reboot_feasibility: [high, unknown]
+    capability: patch
+    purpose: immediate_risk_reduction
+    impact: low
+    downtime: brief
+
+  - id: SELECT-LIVE-PATCH
+    when:
+      kernel_security_exposure: true
+      reboot_feasibility: [low, none, unknown]
+    capability: live_patch
+    purpose: immediate_risk_reduction
+    impact: low
+    downtime: none
+
+  - id: SELECT-UPGRADE
+    when:
+      support_phase: [approaching_eol, extended]
+      same_family_upgrade_available: true
+    capability: upgrade
+    purpose: durable_fix
+    impact: high
+    downtime: required
+    long_term_value: high
+
+  - id: SELECT-MIGRATE
+    when:
+      support_phase: end_of_life
+    capability: migrate
+    purpose: durable_fix
+    impact: high
+    downtime: required
+    long_term_value: high
+
+  - id: SELECT-ELS-RUNWAY
+    when:
+      support_phase: end_of_life
+      migration_immediate: false
+    capability: extended_support
+    purpose: migration_runway
+    impact: low
+    downtime: none
+
+  - id: SELECT-COMPENSATE
+    when:
+      remediation_blocked: true
+    capability: compensating_control
+    purpose: compensating
+    impact: medium
+    downtime: none
+
+pairing:
+  default_when:
+    - support_phase: [end_of_life, approaching_eol, extended]
+    - reboot_feasibility: [low, none]
+    - any_exposure: true
+  primary_recommendation: >
+    Apply non-disruptive mitigation immediately, then schedule operating
+    system migration as the long-term remediation.
+
+provider_attachment: after_capability_selection

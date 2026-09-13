@@ -1,0 +1,97 @@
+schema_version: "1.0.0"
+component: operational_constraints
+spec: LL-006
+overall_weight: 0.15
+description: >
+  Operational difficulty of conventional remediation. High uptime and
+  low reboot feasibility raise this component.
+
+bands:
+  healthy: [0, 19]
+  watch: [20, 39]
+  elevated: [40, 59]
+  high: [60, 79]
+  critical: [80, 100]
+
+business_criticality_scores:
+  low: 10
+  standard: 40
+  high: 70
+  critical: 100
+
+reboot_feasibility:
+  derive:
+    - when:
+        maintenance_window: none
+      value: none
+    - when:
+        any:
+          - business_criticality: critical
+          - maintenance_window: [quarterly, annual]
+          - workload_class: [database, payments, identity]
+      value: low
+    - when:
+        maintenance_window: [weekly, monthly]
+        business_criticality: { neq: critical }
+      value: high
+    - when:
+        context_missing: true
+      value: unknown
+      inferred: low
+
+rules:
+  - id: OPS-UPTIME-EXTREME
+    when:
+      uptime_days: { gte: 365 }
+    score: 86
+    finding_severity: critical
+    finding_code: OPS-EXCESSIVE-UPTIME
+    title: Multi-year or extreme uptime without reboot
+
+  - id: OPS-UPTIME-HIGH
+    when:
+      uptime_days: { gte: 180, lt: 365 }
+    score: 64
+    finding_severity: high
+    finding_code: OPS-EXCESSIVE-UPTIME
+    title: Extended uptime without reboot
+
+  - id: OPS-UPTIME-WATCH
+    when:
+      uptime_days: { gte: 90, lt: 180 }
+    score: 34
+    finding_severity: watch
+
+  - id: OPS-REBOOT-NONE
+    when:
+      reboot_feasibility: none
+    score_floor: 80
+    finding_severity: critical
+    finding_code: OPS-REBOOT-INFEASIBLE
+    title: Conventional reboot-based patching is not currently viable
+
+  - id: OPS-REBOOT-LOW
+    when:
+      reboot_feasibility: low
+    score_floor: 62
+    finding_severity: high
+    finding_code: OPS-REBOOT-CONSTRAINED
+    title: Reboot is operationally difficult
+
+  - id: OPS-PENDING-BLOCKED
+    when:
+      reboot_required: true
+      reboot_feasibility: [low, none]
+    score_floor: 74
+    finding_severity: high
+    finding_code: OPS-PENDING-REBOOT-BLOCKED
+    title: Pending reboot cannot be completed under current constraints
+
+  - id: OPS-HEALTHY
+    when:
+      uptime_days: { lt: 90 }
+      reboot_feasibility: high
+    score: 12
+    finding_severity: healthy
+
+combine: max_then_floor

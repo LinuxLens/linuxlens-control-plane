@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linuxlens"
+version = "0.1.0"
+description = "Read-only Linux estate collector and deterministic risk assessment CLI"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Iman Suherman", email = "iman.suherman@gmail.com" }]
+keywords = ["linux", "security", "lifecycle", "patching", "assessment"]
+dependencies = [
+  "PyYAML>=6.0",
+]
+
+[project.scripts]
+linuxlens = "linuxlens.cli:main"
+
+[project.urls]
+Homepage = "https://linuxlens.suherman.net"
+Repository = "https://github.com/LinuxLens/linuxlens-control-plane"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["linuxlens*"]
+
+[tool.setuptools.package-data]
+linuxlens = ["py.typed"]

@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/collector.schema.json",
+  "title": "LinuxLens collector evidence",
+  "description": "Structured facts produced by linuxlens-collector. Conclusions, scores, and recommendations are forbidden.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "collected_at",
+    "collector",
+    "host_id",
+    "os"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "content_digest": {
+      "type": "string",
+      "description": "Hex digest of the evidence payload excluding this field."
+    },
+    "collector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "mode"],
+      "properties": {
+        "version": { "type": "string", "minLength": 1 },
+        "mode": { "enum": ["connected", "offline", "relay"] },
+        "relay_id": { "type": "string" }
+      }
+    },
+    "host_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable operator or collector identity within an estate."
+    },
+    "hostname": { "type": "string" },
+    "machine_id": { "type": "string" },
+    "architecture": { "type": "string" },
+    "os": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family"],
+      "properties": {
+        "family": {
+          "enum": ["rhel", "debian", "ubuntu", "suse", "amazon", "other"]
+        },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "pretty_name": { "type": "string" },
+        "variant": { "type": "string" }
+      }
+    },
+    "kernel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string" },
+        "release": { "type": "string" },
+        "flavour": { "type": "string" }
+      }
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cpu_model": { "type": "string" },
+        "cpu_count": { "type": "integer", "minimum": 1 },
+        "memory_bytes": { "type": "integer", "minimum": 0 },
+        "virtualization": { "type": "string" }
+      }
+    },
+    "uptime_days": {
+      "type": "number",
+      "minimum": 0
+    },
+    "last_boot_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reboot_required": { "type": "boolean" },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "version"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "arch": { "type": "string" }
+        }
+      }
+    },
+    "updates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "available_count": { "type": "integer", "minimum": 0 },
+        "security_count": { "type": "integer", "minimum": 0 },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "current_version": { "type": "string" },
+              "available_version": { "type": "string" },
+              "security": { "type": "boolean" }
+            }
+          }
+        },
+        "metadata_available": { "type": "boolean" }
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "baseurl_host": { "type": "string" },
+          "enabled": { "type": "boolean" }
+        }
+      }
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "state": { "enum": ["running", "exited", "unknown"] }
+        }
+      }
+    },
+    "containers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "runtime": { "type": "string" },
+          "name": { "type": "string" },
+          "image": { "type": "string" }
+        }
+      }
+    },
+    "runtimes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "enum": ["java", "python", "node", "php", "ruby", "go", "other"] },
+          "version": { "type": "string" }
+        }
+      }
+    },
+    "mac": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selinux": { "enum": ["enforcing", "permissive", "disabled", "not_applicable", "unknown"] },
+        "apparmor": { "enum": ["enforcing", "complain", "disabled", "not_applicable", "unknown"] }
+      }
+    },
+    "workload_hints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Inferred names such as postgresql, httpd. Not a business declaration."
+    },
+    "cloud": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "provider": { "enum": ["aws", "azure", "gcp", "other"] },
+        "region": { "type": "string" },
+        "instance_type": { "type": "string" },
+        "instance_id": { "type": "string" }
+      }
+    },
+    "collection_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code"],
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}

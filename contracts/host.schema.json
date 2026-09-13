@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxlens.dev/schemas/host.schema.json",
+  "title": "LinuxLens host",
+  "description": "Normalised host record after ingest. Scoped to Organisation → Workspace → Estate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "host_id",
+    "organisation_id",
+    "workspace_id",
+    "estate_id",
+    "os",
+    "first_seen_at",
+    "last_seen_at"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": {
+      "type": "string",
+      "description": "Platform UUID for the host row."
+    },
+    "host_id": { "type": "string" },
+    "organisation_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "estate_id": { "type": "string" },
+    "hostname": { "type": "string" },
+    "identity_weak": { "type": "boolean" },
+    "architecture": { "type": "string" },
+    "os": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family"],
+      "properties": {
+        "family": {
+          "enum": ["rhel", "debian", "ubuntu", "suse", "amazon", "other"]
+        },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "pretty_name": { "type": "string" }
+      }
+    },
+    "kernel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string" },
+        "release": { "type": "string" }
+      }
+    },
+    "uptime_days": { "type": "number", "minimum": 0 },
+    "reboot_required": { "type": "boolean" },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "business_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workload": { "type": "string" },
+        "business_criticality": {
+          "enum": ["low", "standard", "high", "critical"]
+        },
+        "maintenance_window": {
+          "enum": ["weekly", "monthly", "quarterly", "annual", "none"]
+        },
+        "internet_exposed": { "type": "boolean" },
+        "regulatory_tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "first_seen_at": { "type": "string", "format": "date-time" },
+    "last_seen_at": { "type": "string", "format": "date-time" },
+    "last_scan_id": { "type": "string" }
+  }
+}

@@ -1,0 +1,40 @@
+provider: tuxcare
+display_name: TuxCare
+vendor_neutral: false
+required_for_complete_assessment: false
+description: >
+  Optional fulfilment mappings. TuxCare products appear only after LinuxLens
+  has selected a capability. Do not use this file as a scoring input.
+
+products:
+  - id: kernelcare-enterprise
+    name: TuxCare KernelCare Enterprise
+    capabilities: [live_patch]
+    applies_when:
+      kernel_security_exposure: true
+    language:
+      primary: Live kernel patching is recommended.
+      secondary: "Available provider: TuxCare KernelCare Enterprise."
+
+  - id: els
+    name: TuxCare Enterprise Linux Support (ELS)
+    capabilities: [extended_support]
+    applies_when:
+      support_phase: end_of_life
+    language:
+      primary: Extended lifecycle support can create migration runway.
+      secondary: "Available provider: TuxCare ELS."
+
+  - id: libcare
+    name: TuxCare LibCare
+    capabilities: [live_patch]
+    applies_when:
+      userspace_live_patch_candidate: true
+    language:
+      primary: Userspace live patching is recommended for the affected libraries.
+      secondary: "Available provider: TuxCare LibCare."
+
+forbidden_language:
+  - Buy KernelCare
+  - TuxCare finds this host critical
+  - You should purchase ELS

@@ -1,0 +1,114 @@
+schema_version: "1.0.0"
+spec: LL-003
+as_of: "2026-09-13"
+
+cases:
+  - id: LC-001
+    name: Supported Ubuntu with more than 365 days remaining
+    input:
+      os:
+        family: ubuntu
+        version: "22.04"
+      knowledge:
+        support_phase: standard
+        days_to_standard_eol: 400
+    expect:
+      lifecycle.phase: standard
+      findings.absent: [LIFECYCLE-APPROACHING, LIFECYCLE-EOL, LIFECYCLE-WATCH]
+      risk.components.lifecycle_exposure: { lte: 19 }
+
+  - id: LC-002
+    name: CentOS 7 reports lifecycle exposure
+    input:
+      os:
+        family: rhel
+        name: centos
+        version: "7"
+      knowledge:
+        support_phase: end_of_life
+        standard_support_ends: "2024-06-30"
+      extended_coverage_evidenced: false
+    expect:
+      lifecycle.phase: end_of_life
+      findings.present:
+        - code: LIFECYCLE-EOL
+          severity: critical
+      risk.components.lifecycle_exposure: { gte: 80 }
+
+  - id: LC-003
+    name: OS reaching end of support within 180 days
+    input:
+      os:
+        family: ubuntu
+        version: "20.04"
+      knowledge:
+        support_phase: approaching_eol
+        days_to_standard_eol: 90
+    expect:
+      findings.present:
+        - code: LIFECYCLE-APPROACHING
+          severity: high
+      risk.components.lifecycle_exposure: { gte: 60, lte: 79 }
+
+  - id: LC-004
+    name: RHEL 7.9 without ELS is end of life
+    input:
+      os:
+        family: rhel
+        name: rhel
+        version: "7.9"
+      knowledge:
+        support_phase: end_of_life
+      extended_coverage_evidenced: false
+    expect:
+      lifecycle.phase: end_of_life
+      findings.present:
+        - code: LIFECYCLE-EOL
+
+  - id: LC-005
+    name: Unknown distro does not score Healthy on lifecycle
+    input:
+      os:
+        family: other
+        name: exotic-linux
+        version: "1.0"
+      knowledge: null
+    expect:
+      lifecycle.phase: unknown
+      findings.present:
+        - code: LIFECYCLE-UNKNOWN
+      coverage_gaps.present: [LIFECYCLE-UNKNOWN]
+      risk.components.lifecycle_exposure: { gte: 20 }
+      risk.band: { neq: healthy }
+
+  - id: LC-007
+    name: More than 180 days remaining does not create an upcoming-lifecycle finding
+    input:
+      os:
+        family: ubuntu
+        version: "22.04"
+      knowledge:
+        support_phase: standard
+        days_to_standard_eol: 220
+    expect:
+      lifecycle.phase: standard
+      findings.absent: [LIFECYCLE-APPROACHING, LIFECYCLE-EOL]
+      findings.present:
+        - code: LIFECYCLE-WATCH
+      risk.components.lifecycle_exposure: { gte: 20, lte: 39 }
+
+  - id: LC-006
+    name: Evidenced extended coverage is extended, not EOL
+    input:
+      os:
+        family: rhel
+        name: centos
+        version: "7"
+      knowledge:
+        support_phase: end_of_life
+      extended_coverage_evidenced: true
+    expect:
+      lifecycle.phase: extended
+      findings.present:
+        - code: LIFECYCLE-EXTENDED
+      findings.absent: [LIFECYCLE-EOL]

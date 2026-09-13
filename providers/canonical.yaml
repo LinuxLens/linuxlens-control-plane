@@ -1,0 +1,35 @@
+provider: canonical
+display_name: Canonical
+vendor_neutral: false
+required_for_complete_assessment: false
+description: Optional fulfilment for Ubuntu estates.
+
+products:
+  - id: ubuntu-pro-esm
+    name: Ubuntu Pro / ESM
+    capabilities: [extended_support, patch]
+    applies_when:
+      os.family: ubuntu
+      support_phase: [extended, approaching_eol, end_of_life]
+    language:
+      primary: Extended security maintenance can create upgrade runway.
+      secondary: "Available provider: Ubuntu Pro / ESM."
+
+  - id: ubuntu-livepatch
+    name: Ubuntu Livepatch
+    capabilities: [live_patch]
+    applies_when:
+      os.family: ubuntu
+      kernel_security_exposure: true
+    language:
+      primary: Live kernel patching is recommended.
+      secondary: "Available provider: Ubuntu Livepatch."
+
+  - id: ubuntu-release-upgrade
+    name: Ubuntu release upgrade
+    capabilities: [upgrade]
+    applies_when:
+      os.family: ubuntu
+    language:
+      primary: Upgrade to a supported Ubuntu LTS release.
+      secondary: Use distribution upgrade tooling; this is a generic-linux path also listed here for Ubuntu operators.
